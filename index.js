@@ -1,6 +1,6 @@
+const express = require("express");
+const mongoose = require("mongoose");
 const { User } = require("./models");
-const express = require("exp");
-const mongoose = require("mongo");
 
 mongoose.connect(
   "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
@@ -9,10 +9,11 @@ mongoose.connect(
     useUnifiedTopology: true
   }
 );
+
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "the action cannot be completed!"));
+db.on("error", console.error.bind(console, "Connection error: "));
 db.once("open", function () {
-  console.log("mongoDB in operation.");
+  console.log("MongoDB Connected.");
 });
 
 const app = express();
@@ -27,7 +28,7 @@ app.post("/", async (request, response) => {
 });
 
 // READ
-app.get("/:Identify", async (request, response) => {
+app.get("/:id", async (request, response) => {
   const { id } = request.params;
 
   try {
@@ -38,12 +39,12 @@ app.get("/:Identify", async (request, response) => {
       password: result.password
     });
   } catch {
-    console.log('the data was not recognized');
+    response.status(401).json({'Unauthorized': 'Id is not valid'});
   }
 });
 
 // UPDATE
-app.put("/:Identify", async (request, response) => {
+app.put("/:id", async (request, response) => {
   const { id } = request.params;
 
   const { username, password } = request.body;
@@ -56,25 +57,23 @@ app.put("/:Identify", async (request, response) => {
     response.status(200).json({ 
       username, password
     });
-    
   } catch {
-    console.log('The data could not be confirmed');
+    response.status(401).json({'Unauthorized': 'Id is not valid'});
   }
 });
 
 // DELETE
-// infinite load on request
-app.delete("/:Identify", async (request, response) => {
+app.delete("/:id", async (request, response) => {
   const { id } = request.params;
 
-  try {
-    User.findOneAndRemove(User._id == id);
-
-    response.status(202);
-  } catch {
-    console.log('The data could not be confirmed');
-  }
+  User.findByIdAndRemove(id, (err, doc) => {
+    if(!err) {
+      response.status(204).end();
+    } else {
+      response.status(401).json({'Unauthorized': 'Id is not valid'});
+    }
+  });
 });
 
 const port = 8090;
-app.listen(port, () => console.log(`Rodando em localhost:${port}`));
+app.listen(port, () => console.log(`Server started on localhost:${port}`));
