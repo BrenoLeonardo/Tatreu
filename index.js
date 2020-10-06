@@ -1,6 +1,6 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const { User } = require("./models");
+const express = require("exp");
+const mongoose = require("mongo");
 
 mongoose.connect(
   "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
@@ -10,9 +10,9 @@ mongoose.connect(
   }
 );
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "Connection error: "));
+db.on("error", console.error.bind(console, "the action cannot be completed!"));
 db.once("open", function () {
-  console.log("MongoDB Connected.");
+  console.log("mongoDB in operation.");
 });
 
 const app = express();
@@ -27,7 +27,7 @@ app.post("/", async (request, response) => {
 });
 
 // READ
-app.get("/:id", async (request, response) => {
+app.get("/:Identify", async (request, response) => {
   const { id } = request.params;
 
   try {
@@ -38,12 +38,12 @@ app.get("/:id", async (request, response) => {
       password: result.password
     });
   } catch {
-    console.log('Id is not valid');
+    console.log('the data was not recognized');
   }
 });
 
 // UPDATE
-app.put("/:id", async (request, response) => {
+app.put("/:Identify", async (request, response) => {
   const { id } = request.params;
 
   const { username, password } = request.body;
@@ -56,14 +56,15 @@ app.put("/:id", async (request, response) => {
     response.status(200).json({ 
       username, password
     });
+    
   } catch {
-    console.log('Id is not valid');
+    console.log('The data could not be confirmed');
   }
 });
 
 // DELETE
 // infinite load on request
-app.delete("/:id", async (request, response) => {
+app.delete("/:Identify", async (request, response) => {
   const { id } = request.params;
 
   try {
@@ -71,7 +72,7 @@ app.delete("/:id", async (request, response) => {
 
     response.status(202);
   } catch {
-    console.log('Id is not valid');
+    console.log('The data could not be confirmed');
   }
 });
 
