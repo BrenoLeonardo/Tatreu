@@ -1,6 +1,7 @@
+const { User } = require("./models");
 const express = require("express");
 const mongoose = require("mongoose");
-const { User } = require("./models");
+
 
 mongoose.connect(
   "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
@@ -12,8 +13,8 @@ mongoose.connect(
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection error: "));
-db.once("open", function () {
-  console.log("MongoDB Connected.");
+db.once("released", function () {
+  console.log("MongoDB .");
 });
 
 const app = express();
